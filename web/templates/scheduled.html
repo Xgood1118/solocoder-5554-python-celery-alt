@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Scheduled Tasks - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Scheduled Tasks</div>
+    {% if scheduled %}
+    <table>
+        <thead>
+            <tr><th>Task Name</th><th>Cron</th><th>Interval</th><th>ETA</th><th>Next Run</th><th>Queue</th><th>Args</th></tr>
+        </thead>
+        <tbody>
+        {% for entry in scheduled %}
+            <tr>
+                <td>{{ entry.get('task_name', '') }}</td>
+                <td>{{ entry.get('cron', '-') }}</td>
+                <td>{{ entry.get('interval', '-') }}</td>
+                <td>{{ entry.get('eta', '-') }}</td>
+                <td style="color:#4361ee; font-weight:600;">{{ entry.get('next_run', '-') }}</td>
+                <td>{{ entry.get('queue', '-') }}</td>
+                <td>{{ entry.get('args', []) | tojson }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No scheduled tasks configured</div>
+    {% endif %}
+</div>
+{% endblock %}

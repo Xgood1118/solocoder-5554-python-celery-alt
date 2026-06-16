@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}Tasks - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Task List</div>
+    <form method="get" action="/tasks" class="filter-bar">
+        <div class="form-group">
+            <label>Status</label>
+            <select name="status">
+                <option value="">All</option>
+                <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="running" {% if status == 'running' %}selected{% endif %}>Running</option>
+                <option value="success" {% if status == 'success' %}selected{% endif %}>Success</option>
+                <option value="failed" {% if status == 'failed' %}selected{% endif %}>Failed</option>
+                <option value="retrying" {% if status == 'retrying' %}selected{% endif %}>Retrying</option>
+                <option value="timeout" {% if status == 'timeout' %}selected{% endif %}>Timeout</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Queue</label>
+            <select name="queue">
+                <option value="">All</option>
+                {% for qn in queue_names %}
+                <option value="{{ qn }}" {% if queue == qn %}selected{% endif %}>{{ qn }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="form-group">
+            <label>From</label>
+            <input type="datetime-local" name="time_from" value="{{ time_from }}">
+        </div>
+        <div class="form-group">
+            <label>To</label>
+            <input type="datetime-local" name="time_to" value="{{ time_to }}">
+        </div>
+        <div class="form-group">
+            <label>&nbsp;</label>
+            <button type="submit" class="btn btn-primary">Filter</button>
+        </div>
+    </form>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Queue</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Retry</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="task-tbody">
+            {% for task in tasks %}
+            <tr>
+                <td><a href="/tasks/{{ task.id }}" style="color:#4361ee;">{{ task.id[:8] }}...</a></td>
+                <td>{{ task.get('task_name', '') }}</td>
+                <td><span class="badge badge-{{ task.get('queue', 'medium') }}">{{ task.get('queue', 'medium') }}</span></td>
+                <td><span class="badge badge-{{ task.get('status', 'pending') }}">{{ task.get('status', 'pending') }}</span></td>
+                <td>{{ task.get('priority', 5) }}</td>
+                <td>{{ task.get('retry_count', 0) }}/{{ task.get('max_retries', 3) }}</td>
+                <td>{{ task.get('created_at', '')[:19] }}</td>
+                <td>
+                    <form method="post" action="/tasks/{{ task.id }}/rerun" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-primary">Rerun</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8" class="empty-state">No tasks found</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <div class="card-title">Registered Tasks</div>
+    <table>
+        <thead><tr><th>Name</th><th>Queue</th><th>Timeout</th><th>Depends On</th><th>Max Retries</th></tr></thead>
+        <tbody>
+        {% for name, info in registered.items() %}
+            <tr>
+                <td>{{ name }}</td>
+                <td><span class="badge badge-{{ info.get('queue', 'medium') }}">{{ info.get('queue', 'medium') }}</span></td>
+                <td>{{ info.get('timeout', 300) }}s</td>
+                <td>{{ info.get('depends_on', '-') }}</td>
+                <td>{{ info.get('retry_config', {}).get('max_retries', 3) }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+(function() {
+    const evtSource = new EventSource("/api/tasks/stream");
+    evtSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const tbody = document.getElementById("task-tbody");
+        if (data.recent_tasks && data.recent_tasks.length > 0) {
+            let html = '';
+            data.recent_tasks.forEach(function(task) {
+                const shortId = task.id ? task.id.substring(0, 8) + '...' : '???';
+                const tname = task.task_name || '';
+                const q = task.queue || 'medium';
+                const s = task.status || 'pending';
+                const pri = task.priority || 5;
+                const rc = task.retry_count || 0;
+                const mr = task.max_retries || 3;
+                const ca = task.created_at ? task.created_at.substring(0, 19) : '';
+                html += '<tr>';
+                html += '<td><a href="/tasks/' + task.id + '" style="color:#4361ee;">' + shortId + '</a></td>';
+                html += '<td>' + tname + '</td>';
+                html += '<td><span class="badge badge-' + q + '">' + q + '</span></td>';
+                html += '<td><span class="badge badge-' + s + '">' + s + '</span></td>';
+                html += '<td>' + pri + '</td>';
+                html += '<td>' + rc + '/' + mr + '</td>';
+                html += '<td>' + ca + '</td>';
+                html += '<td><form method="post" action="/tasks/' + task.id + '/rerun" style="display:inline;"><button type="submit" class="btn btn-sm btn-primary">Rerun</button></form></td>';
+                html += '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+    };
+})();
+</script>
+{% endblock %}

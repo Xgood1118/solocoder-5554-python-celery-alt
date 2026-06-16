@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Task Scheduler{% endblock %}</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f0f2f5; color: #333; }
+        .navbar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; padding: 0 24px; height: 56px; display: flex; align-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+        .navbar h1 { font-size: 18px; font-weight: 600; }
+        .navbar nav { margin-left: auto; display: flex; gap: 4px; }
+        .navbar a { color: #adb5bd; text-decoration: none; padding: 8px 14px; border-radius: 6px; font-size: 13px; transition: all .2s; }
+        .navbar a:hover, .navbar a.active { color: #fff; background: rgba(255,255,255,0.1); }
+        .container { max-width: 1280px; margin: 0 auto; padding: 24px; }
+        .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); padding: 20px; margin-bottom: 20px; }
+        .card-title { font-size: 16px; font-weight: 600; margin-bottom: 16px; color: #1a1a2e; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: #f8f9fa; text-align: left; padding: 10px 12px; font-weight: 600; color: #495057; border-bottom: 2px solid #dee2e6; }
+        td { padding: 10px 12px; border-bottom: 1px solid #f1f3f5; }
+        tr:hover { background: #f8f9fa; }
+        .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+        .badge-pending { background: #fff3cd; color: #856404; }
+        .badge-running { background: #cce5ff; color: #004085; }
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-failed { background: #f8d7da; color: #721c24; }
+        .badge-retrying { background: #ffeeba; color: #856404; }
+        .badge-timeout { background: #f5c6cb; color: #721c24; }
+        .badge-dead { background: #d6d8db; color: #383d41; }
+        .badge-high { background: #f8d7da; color: #721c24; }
+        .badge-medium { background: #fff3cd; color: #856404; }
+        .badge-low { background: #d4edda; color: #155724; }
+        .badge-batch { background: #cce5ff; color: #004085; }
+        .btn { display: inline-block; padding: 6px 14px; border: none; border-radius: 6px; font-size: 13px; cursor: pointer; text-decoration: none; transition: all .2s; }
+        .btn-primary { background: #4361ee; color: #fff; }
+        .btn-primary:hover { background: #3a56d4; }
+        .btn-danger { background: #e63946; color: #fff; }
+        .btn-danger:hover { background: #c1121f; }
+        .btn-success { background: #2d6a4f; color: #fff; }
+        .btn-success:hover { background: #1b4332; }
+        .btn-sm { padding: 3px 10px; font-size: 12px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 4px; color: #495057; }
+        .form-group input, .form-group select { width: 100%; padding: 6px 10px; border: 1px solid #ced4da; border-radius: 6px; font-size: 13px; }
+        .filter-bar { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 16px; }
+        .filter-bar .form-group { min-width: 140px; }
+        .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 20px; }
+        .stat-card { background: #fff; border-radius: 10px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+        .stat-card .stat-label { font-size: 12px; color: #6c757d; margin-bottom: 4px; }
+        .stat-card .stat-value { font-size: 28px; font-weight: 700; color: #1a1a2e; }
+        .code-block { background: #1a1a2e; color: #e0e0e0; padding: 14px; border-radius: 8px; font-family: "Consolas", "Monaco", monospace; font-size: 12px; overflow-x: auto; white-space: pre-wrap; word-break: break-all; max-height: 300px; overflow-y: auto; }
+        .detail-grid { display: grid; grid-template-columns: 140px 1fr; gap: 8px 16px; font-size: 13px; }
+        .detail-grid dt { font-weight: 600; color: #495057; }
+        .detail-grid dd { color: #333; }
+        .empty-state { text-align: center; padding: 40px; color: #6c757d; }
+        .empty-state svg { width: 48px; height: 48px; margin-bottom: 12px; opacity: 0.4; }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="navbar">
+        <h1>Task Scheduler</h1>
+        <nav>
+            <a href="/tasks" class="{% if request.path == '/tasks' %}active{% endif %}">Tasks</a>
+            <a href="/queues" class="{% if request.path == '/queues' %}active{% endif %}">Queues</a>
+            <a href="/workers" class="{% if request.path == '/workers' %}active{% endif %}">Workers</a>
+            <a href="/scheduled" class="{% if request.path == '/scheduled' %}active{% endif %}">Scheduled</a>
+            <a href="/dependencies" class="{% if request.path == '/dependencies' %}active{% endif %}">Dependencies</a>
+            <a href="/logs" class="{% if request.path == '/logs' %}active{% endif %}">Logs</a>
+            <a href="/dlq" class="{% if request.path == '/dlq' %}active{% endif %}">DLQ</a>
+        </nav>
+    </div>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

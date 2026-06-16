@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Workers - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Worker Status</div>
+    <table>
+        <thead>
+            <tr><th>Queue</th><th>Running</th><th>Completed</th><th>Failed</th><th>Last Heartbeat</th></tr>
+        </thead>
+        <tbody>
+        {% for qname, data in status.items() %}
+            <tr>
+                <td><span class="badge badge-{{ qname }}">{{ qname }}</span></td>
+                <td>{{ data.get('running', 0) }}</td>
+                <td>{{ data.get('completed', 0) }}</td>
+                <td>{{ data.get('failed', 0) }}</td>
+                <td>{{ data.get('last_heartbeat', '-') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <div class="card-title">Heartbeat Details</div>
+    <table>
+        <thead>
+            <tr><th>Worker ID</th><th>Queue</th><th>Status</th><th>Completed</th><th>Failed</th><th>Last Beat</th></tr>
+        </thead>
+        <tbody>
+        {% for wid, data in heartbeat.items() %}
+            <tr>
+                <td>{{ wid }}</td>
+                <td><span class="badge badge-{{ data.get('queue', 'medium') }}">{{ data.get('queue', 'medium') }}</span></td>
+                <td><span class="badge badge-{{ 'success' if data.get('status') == 'alive' else 'failed' }}">{{ data.get('status', 'unknown') }}</span></td>
+                <td>{{ data.get('tasks_completed', 0) }}</td>
+                <td>{{ data.get('tasks_failed', 0) }}</td>
+                <td>{{ data.get('last_beat', '-') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

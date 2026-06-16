@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Error - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Error</div>
+    <p>{{ message }}</p>
+    <a href="/tasks" class="btn btn-primary" style="margin-top:16px;">Back to Tasks</a>
+</div>
+{% endblock %}

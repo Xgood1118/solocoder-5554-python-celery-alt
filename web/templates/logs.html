@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Audit Logs - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Audit Log Stream</div>
+    <table>
+        <thead>
+            <tr><th>Time</th><th>Actor</th><th>Action</th><th>Target</th><th>IP</th><th>Result</th><th>Detail</th></tr>
+        </thead>
+        <tbody id="log-tbody">
+            <tr><td colspan="7" class="empty-state">Loading logs...</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+(function() {
+    const evtSource = new EventSource("/api/logs/stream");
+    evtSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        const tbody = document.getElementById("log-tbody");
+        if (data.logs && data.logs.length > 0) {
+            let html = '';
+            data.logs.forEach(function(log) {
+                const ts = log.timestamp ? log.timestamp.substring(11, 19) : '';
+                const detail = log.detail ? JSON.stringify(log.detail) : '-';
+                html += '<tr>';
+                html += '<td>' + ts + '</td>';
+                html += '<td>' + (log.actor || '') + '</td>';
+                html += '<td>' + (log.action || '') + '</td>';
+                html += '<td>' + (log.target || '') + '</td>';
+                html += '<td>' + (log.ip || '') + '</td>';
+                html += '<td><span class="badge badge-' + (log.result === 'success' ? 'success' : 'failed') + '">' + (log.result || '') + '</span></td>';
+                html += '<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + detail + '">' + detail + '</td>';
+                html += '</tr>';
+            });
+            tbody.innerHTML = html;
+        }
+    };
+})();
+</script>
+{% endblock %}

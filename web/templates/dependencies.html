@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% block title %}Dependencies - Task Scheduler{% endblock %}
+{% block extra_head %}
+<style>
+    #dep-canvas { width: 100%; min-height: 400px; border: 1px solid #dee2e6; border-radius: 8px; background: #fafbfc; }
+</style>
+{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Task Dependency Graph</div>
+    <canvas id="dep-canvas"></canvas>
+</div>
+
+<div class="card">
+    <div class="card-title">Dependency List</div>
+    {% if edges %}
+    <table>
+        <thead><tr><th>From</th><th>Arrow</th><th>To</th></tr></thead>
+        <tbody>
+        {% for edge in edges %}
+            <tr>
+                <td>{{ edge.from }}</td>
+                <td>&rarr;</td>
+                <td>{{ edge.to }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No dependencies defined</div>
+    {% endif %}
+</div>
+
+<script>
+(function() {
+    const canvas = document.getElementById('dep-canvas');
+    const ctx = canvas.getContext('2d');
+    const nodes = {{ nodes | tojson }};
+    const edges = {{ edges | tojson }};
+
+    function resize() {
+        canvas.width = canvas.clientWidth * (window.devicePixelRatio || 1);
+        canvas.height = Math.max(400, canvas.clientWidth * 0.4) * (window.devicePixelRatio || 1);
+        canvas.style.height = Math.max(400, canvas.clientWidth * 0.4) + 'px';
+        draw();
+    }
+
+    const queueColors = { high: '#e63946', medium: '#f4a261', low: '#2a9d8f', batch: '#4361ee' };
+    let positions = {};
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const dpr = window.devicePixelRatio || 1;
+        const w = canvas.width;
+        const h = canvas.height;
+        const nodeW = 140 * dpr;
+        const nodeH = 40 * dpr;
+
+        if (nodes.length === 0) {
+            ctx.fillStyle = '#6c757d';
+            ctx.font = (14 * dpr) + 'px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('No tasks registered', w / 2, h / 2);
+            return;
+        }
+
+        const cols = Math.ceil(Math.sqrt(nodes.length));
+        const rows = Math.ceil(nodes.length / cols);
+        const gapX = (w - cols * nodeW) / (cols + 1);
+        const gapY = (h - rows * nodeH) / (rows + 1);
+
+        nodes.forEach(function(node, i) {
+            const col = i % cols;
+            const row = Math.floor(i / cols);
+            const x = gapX + col * (nodeW + gapX);
+            const y = gapY + row * (nodeH + gapY);
+            positions[node.id] = { x: x + nodeW / 2, y: y + nodeH / 2, left: x, top: y };
+
+            ctx.fillStyle = queueColors[node.queue] || '#4361ee';
+            ctx.beginPath();
+            ctx.roundRect(x, y, nodeW, nodeH, 6 * dpr);
+            ctx.fill();
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold ' + (12 * dpr) + 'px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(node.id, x + nodeW / 2, y + nodeH / 2);
+        });
+
+        edges.forEach(function(edge) {
+            const from = positions[edge.from];
+            const to = positions[edge.to];
+            if (!from || !to) return;
+
+            ctx.strokeStyle = '#adb5bd';
+            ctx.lineWidth = 2 * dpr;
+            ctx.beginPath();
+            ctx.moveTo(from.x, from.y);
+            ctx.lineTo(to.x, to.y);
+            ctx.stroke();
+
+            const angle = Math.atan2(to.y - from.y, to.x - from.x);
+            const headLen = 10 * dpr;
+            ctx.fillStyle = '#adb5bd';
+            ctx.beginPath();
+            ctx.moveTo(to.x, to.y);
+            ctx.lineTo(to.x - headLen * Math.cos(angle - 0.4), to.y - headLen * Math.sin(angle - 0.4));
+            ctx.lineTo(to.x - headLen * Math.cos(angle + 0.4), to.y - headLen * Math.sin(angle + 0.4));
+            ctx.closePath();
+            ctx.fill();
+        });
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+})();
+</script>
+{% endblock %}

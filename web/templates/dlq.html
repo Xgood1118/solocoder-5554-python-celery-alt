@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Dead Letter Queue - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Dead Letter Queue ({{ dlq_items | length }} items)</div>
+    {% if dlq_items %}
+    <table>
+        <thead>
+            <tr><th>ID</th><th>Name</th><th>Queue</th><th>Retry</th><th>Entered DLQ</th><th>Error</th><th>Actions</th></tr>
+        </thead>
+        <tbody>
+        {% for item in dlq_items %}
+            <tr>
+                <td>{{ item.get('id', '')[:8] }}...</td>
+                <td>{{ item.get('task_name', '') }}</td>
+                <td><span class="badge badge-{{ item.get('queue', 'medium') }}">{{ item.get('queue', 'medium') }}</span></td>
+                <td>{{ item.get('retry_count', 0) }}/{{ item.get('max_retries', 3) }}</td>
+                <td>{{ item.get('dlq_entered_at', '')[:19] }}</td>
+                <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="{{ item.get('result_meta', {}).get('error', '') }}">{{ item.get('result_meta', {}).get('error', '-') }}</td>
+                <td>
+                    <form method="post" action="/dlq/{{ item.get('id', '') }}/requeue" style="display:inline;">
+                        <button type="submit" class="btn btn-sm btn-success">Requeue</button>
+                    </form>
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">No tasks in dead letter queue</div>
+    {% endif %}
+</div>
+{% endblock %}

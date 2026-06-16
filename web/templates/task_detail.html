@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Task {{ task_id[:8] }} - Task Scheduler{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-title">Task Detail: {{ task_id[:8] }}...</div>
+    <div class="detail-grid">
+        <dt>ID</dt><dd>{{ task.id }}</dd>
+        <dt>Name</dt><dd>{{ task.get('task_name', '') }}</dd>
+        <dt>Queue</dt><dd><span class="badge badge-{{ task.get('queue', 'medium') }}">{{ task.get('queue', 'medium') }}</span></dd>
+        <dt>Status</dt><dd><span class="badge badge-{{ task.get('status', 'pending') }}">{{ task.get('status', 'pending') }}</span></dd>
+        <dt>Priority</dt><dd>{{ task.get('priority', 5) }}</dd>
+        <dt>Retry Count</dt><dd>{{ task.get('retry_count', 0) }} / {{ task.get('max_retries', 3) }}</dd>
+        <dt>Timeout</dt><dd>{{ task.get('timeout', 300) }}s</dd>
+        <dt>Depends On</dt><dd>{{ task.get('depends_on', '-') }}</dd>
+        <dt>ETA</dt><dd>{{ task.get('eta', '-') }}</dd>
+        <dt>Created</dt><dd>{{ task.get('created_at', '') }}</dd>
+        <dt>Updated</dt><dd>{{ task.get('updated_at', '') }}</dd>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-title">Arguments</div>
+    <div class="code-block">Args: {{ task.get('args', []) | tojson }}
+Kwargs: {{ task.get('kwargs', {}) | tojson }}</div>
+</div>
+
+{% if task.get('result') is not none %}
+<div class="card">
+    <div class="card-title">Result</div>
+    <div class="code-block">{{ task.get('result') | tojson }}</div>
+</div>
+{% endif %}
+
+{% if task.get('result_meta') %}
+<div class="card">
+    <div class="card-title">Execution Metadata</div>
+    <div class="detail-grid">
+        <dt>Duration</dt><dd>{{ "%.3f"|format(task.result_meta.get('duration', 0)) }}s</dd>
+        <dt>Start</dt><dd>{{ task.result_meta.get('start_time', '') }}</dd>
+        <dt>End</dt><dd>{{ task.result_meta.get('end_time', '') }}</dd>
+        {% if task.result_meta.get('error') %}
+        <dt>Error</dt><dd style="color:#e63946;">{{ task.result_meta.error }}</dd>
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<div style="margin-top: 16px;">
+    <form method="post" action="/tasks/{{ task_id }}/rerun" style="display:inline;">
+        <button type="submit" class="btn btn-primary">Rerun Task</button>
+    </form>
+    <a href="/tasks" class="btn" style="background:#6c757d; color:#fff;">Back to List</a>
+</div>
+{% endblock %}

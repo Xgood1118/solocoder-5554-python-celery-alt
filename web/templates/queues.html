@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}Queues - Task Scheduler{% endblock %}
+{% block content %}
+<div class="stats-row">
+    {% for qname in queue_names %}
+    <div class="stat-card">
+        <div class="stat-label">{{ qname | capitalize }} Queue Depth</div>
+        <div class="stat-value" id="depth-{{ qname }}">{{ depths.get(qname, 0) }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+{% for qname in queue_names %}
+<div class="card">
+    <div class="card-title">{{ qname | capitalize }} Queue ({{ depths.get(qname, 0) }} pending)</div>
+    {% set items = peek_data.get(qname, []) %}
+    {% if items %}
+    <table>
+        <thead><tr><th>ID</th><th>Name</th><th>Priority</th><th>Created</th></tr></thead>
+        <tbody>
+        {% for item in items %}
+            <tr>
+                <td><a href="/tasks/{{ item.get('id', '') }}" style="color:#4361ee;">{{ item.get('id', '')[:8] }}...</a></td>
+                <td>{{ item.get('task_name', '') }}</td>
+                <td>{{ item.get('priority', 5) }}</td>
+                <td>{{ item.get('created_at', '')[:19] }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="empty-state">Queue is empty</div>
+    {% endif %}
+</div>
+{% endfor %}
+
+<script>
+(function() {
+    const evtSource = new EventSource("/api/tasks/stream");
+    evtSource.onmessage = function(event) {
+        const data = JSON.parse(event.data);
+        if (data.queue_depths) {
+            Object.keys(data.queue_depths).forEach(function(qname) {
+                const el = document.getElementById("depth-" + qname);
+                if (el) el.textContent = data.queue_depths[qname];
+            });
+        }
+    };
+})();
+</script>
+{% endblock %}

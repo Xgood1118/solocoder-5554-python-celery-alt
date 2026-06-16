@@ -1,0 +1,1 @@
+{"id": "124ce13b-7ee0-48f9-8d8d-f7a51ae44a33", "task_name": "pri_test", "queue": "high", "status": "pending", "args": [3], "kwargs": {}, "priority": 3, "retry_count": 0, "max_retries": 3, "timeout": 300, "created_at": "2026-06-16T04:18:49.028720+00:00", "eta": null, "depends_on": null}
