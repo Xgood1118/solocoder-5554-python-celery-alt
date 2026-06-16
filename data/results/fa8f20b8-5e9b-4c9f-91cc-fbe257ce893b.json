@@ -1,0 +1,1 @@
+{"id": "fa8f20b8-5e9b-4c9f-91cc-fbe257ce893b", "task_name": "chain_add", "queue": "high", "status": "pending", "args": [3, 4], "kwargs": {"_chain_tasks": ["chain_add", "chain_multiply"], "_chain_index": 0}, "priority": 5, "retry_count": 0, "max_retries": 3, "timeout": 300, "created_at": "2026-06-16T05:37:14.801653+00:00", "eta": null, "depends_on": null}

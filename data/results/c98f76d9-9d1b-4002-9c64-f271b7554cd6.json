@@ -1,0 +1,1 @@
+{"id": "c98f76d9-9d1b-4002-9c64-f271b7554cd6", "task_name": "group_multiply", "queue": "medium", "status": "pending", "args": [3, 4], "kwargs": {"_group_id": "18e4c11b-29cc-4c7f-ac69-463f44153e67", "_group_size": 2}, "priority": 5, "retry_count": 0, "max_retries": 3, "timeout": 300, "created_at": "2026-06-16T05:37:14.833029+00:00", "eta": null, "depends_on": null}

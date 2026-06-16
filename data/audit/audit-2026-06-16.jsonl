@@ -20,3 +20,30 @@
 {"timestamp": "2026-06-16T04:28:37.569304+00:00", "actor": "anonymous", "action": "view_dependencies", "target": "dependency_graph", "ip": "127.0.0.1", "result": "success"}
 {"timestamp": "2026-06-16T04:28:37.738713+00:00", "actor": "anonymous", "action": "view_dlq", "target": "dlq", "ip": "127.0.0.1", "result": "success"}
 {"timestamp": "2026-06-16T04:28:55.702543+00:00", "actor": "anonymous", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:18.244296+00:00", "actor": "admin", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:19.430669+00:00", "actor": "admin", "action": "view_queues", "target": "queue_panel", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:30.289685+00:00", "actor": "admin", "action": "view_workers", "target": "worker_status", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:31.474162+00:00", "actor": "admin", "action": "view_scheduled", "target": "scheduled_tasks", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:33.995083+00:00", "actor": "admin", "action": "view_dependencies", "target": "dependency_graph", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:35.706683+00:00", "actor": "admin", "action": "view_logs", "target": "log_stream", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:36:39.065907+00:00", "actor": "admin", "action": "view_dlq", "target": "dlq", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:15.183011+00:00", "actor": "test_user", "action": "test_action", "target": "test_target", "ip": "127.0.0.1", "result": "success", "detail": {"key": "value"}}
+{"timestamp": "2026-06-16T05:37:57.143859+00:00", "actor": "anonymous", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.324507+00:00", "actor": "anonymous", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.550667+00:00", "actor": "admin", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.668135+00:00", "actor": "anonymous", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.737223+00:00", "actor": "anonymous", "action": "view_queues", "target": "queue_panel", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.777339+00:00", "actor": "anonymous", "action": "view_workers", "target": "worker_status", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.837920+00:00", "actor": "anonymous", "action": "view_scheduled", "target": "scheduled_tasks", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.850037+00:00", "actor": "anonymous", "action": "view_dependencies", "target": "dependency_graph", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:37:57.906614+00:00", "actor": "anonymous", "action": "view_dlq", "target": "dlq", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:46:19.612569+00:00", "actor": "admin", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:47:05.165963+00:00", "actor": "admin", "action": "list_tasks", "target": "task_list", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:48:57.382630+00:00", "actor": "admin", "action": "view_scheduled", "target": "scheduled_tasks", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:49:13.208181+00:00", "actor": "admin", "action": "view_scheduled", "target": "scheduled_tasks", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:49:24.092803+00:00", "actor": "admin", "action": "view_scheduled", "target": "scheduled_tasks", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:50:32.141149+00:00", "actor": "admin", "action": "view_task", "target": "0dec724c-cafa-48d6-8760-2bf3cceeaefd", "ip": "127.0.0.1", "result": "success"}
+{"timestamp": "2026-06-16T05:51:07.456708+00:00", "actor": "admin", "action": "rerun_task", "target": "0dec724c-cafa-48d6-8760-2bf3cceeaefd", "ip": "127.0.0.1", "result": "success", "detail": {"new_task_id": "5e42db5b-3324-444e-b741-7a18da0dd03b"}}
+{"timestamp": "2026-06-16T05:51:27.361155+00:00", "actor": "admin", "action": "requeue_dlq", "target": "some-fake-id", "ip": "127.0.0.1", "result": "not_found"}
+{"timestamp": "2026-06-16T05:54:53.295630+00:00", "actor": "admin", "action": "requeue_dlq", "target": "some-fake-id", "ip": "127.0.0.1", "result": "not_found"}
+{"timestamp": "2026-06-16T05:54:57.120276+00:00", "actor": "admin", "action": "requeue_dlq", "target": "0419d441-acdb-45b4-97e2-b77bc7532398", "ip": "127.0.0.1", "result": "success"}

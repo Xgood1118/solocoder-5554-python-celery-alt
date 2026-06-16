@@ -1,0 +1,1 @@
+{"id": "7cf24f3d-b2e0-4378-9b6a-dfd95b5e4974", "task_name": "add", "queue": "high", "status": "pending", "args": [10, 20], "kwargs": {}, "priority": 5, "retry_count": 0, "max_retries": 3, "timeout": 60, "created_at": "2026-06-16T05:38:37.951476+00:00", "eta": null, "depends_on": null}

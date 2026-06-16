@@ -1,0 +1,1 @@
+{"id": "39315f59-1967-4cd4-b64e-80d28176779c", "task_name": "trigger_test", "queue": "medium", "status": "pending", "args": [10, 20], "kwargs": {}, "priority": 5, "retry_count": 0, "max_retries": 3, "timeout": 300, "created_at": "2026-06-16T05:37:14.686052+00:00", "eta": "2026-06-16T05:37:15.686052+00:00", "depends_on": null}
