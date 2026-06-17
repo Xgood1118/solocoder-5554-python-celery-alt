@@ -1,0 +1,1 @@
+{"id": "48f820ae-75ac-48f7-b8f6-4ca8ffc4061e", "task_name": "chain_step3_fix", "status": "FAILED", "error": "test_chain_internal_params.<locals>.step1() got an unexpected keyword argument '_chain_tasks'", "chain_tasks": ["chain_step1_fix", "chain_step2_fix", "chain_step3_fix"], "chain_index": 2, "chain_parent_failure": "e1edfa21-5497-4adf-a75f-34fecdfe92c7"}
