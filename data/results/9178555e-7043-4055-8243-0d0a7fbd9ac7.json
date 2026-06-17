@@ -1,0 +1,1 @@
+{"id": "9178555e-7043-4055-8243-0d0a7fbd9ac7", "task_name": "trigger_test", "queue": "high", "status": "pending", "args": [5, 5], "kwargs": {}, "priority": 5, "retry_count": 0, "max_retries": 3, "timeout": 300, "created_at": "2026-06-17T00:49:17.849835+00:00", "eta": null, "depends_on": null}
